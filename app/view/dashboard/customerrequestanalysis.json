@@ -1,0 +1,150 @@
+{
+	"planDetail_array": null,
+	"strFailureMsg": null,
+	"strSuccessQuery_array": [{
+		"strSuccessMsg": null
+	}],
+	"strPriority_array": null,
+	"strOrigin_array": null,
+	"combo_array": [{
+		"strPeriod": [{
+			"id": "Last7Days",
+			"value": "Last 7 Days"
+		},
+		{
+			"id": "Monthly",
+			"value": "Monthly"
+		},
+		{
+			"id": "Next7Days",
+			"value": "Next 7 Days"
+		},
+		{
+			"id": "Quaterly",
+			"value": "Quaterly"
+		}]
+	}],
+	"strDemandStatus_array": null,
+	"strErrorQuery_array": null,
+	"strReportInFile_array": null,
+	"mappedShipGrid_array": null,
+	"successMsg_array": [{
+		"strSuccessMsg": null
+	}],
+	"strSuccessMsg": null,
+	"custContGrid_array": null,
+	"strDestination_array": null,
+	"svg_svgdata": null,
+	"errorMsg_array": null,
+	"svg_array": [{
+		"svg1": [{
+			"iNormalValue": 45000,
+			"iUrgentValue": 0
+		}]
+	},
+	{
+		"svg1": [{
+			"iTentativeValue": 45000,
+			"iConfirmedValue": 0
+		}]
+	}],
+	"itemdetailsGrid_array": null,
+	"actDetail_array": null,
+	"hdrcache": [{
+		"strPeriod": "Next7Days"
+	}],
+	"grid_array": [{
+		"chart1": [{
+			"xaxis": "Day 1",
+			"yaxis": 2500,
+			"data1": 2500
+		},
+		{
+			"xaxis": "Day 2",
+			"yaxis": 2500,
+			"data1": 2500
+		},
+		{
+			"xaxis": "Day 3",
+			"yaxis": 7000,
+			"data1": 3000
+		},
+		{
+			"xaxis": "Day 4",
+			"yaxis": 20000,
+			"data1": 5000
+		},
+		{
+			"xaxis": "Day 5",
+			"yaxis": 0,
+			"data1": 0
+		},
+		{
+			"xaxis": "Day 6",
+			"yaxis": 0,
+			"data1": 0
+		},
+		{
+			"xaxis": "Day 7",
+			"yaxis": 0,
+			"data1": 0
+		}]
+	},
+	{
+		"customer_dtl": [{
+			"origin": "OM03 Fahud",
+			"destination": "Tambaram",
+			"tot_weight": 45000
+		}]
+	},
+	{
+		"chart3": []
+	},
+	{
+		"chart2": [{
+			"xaxis": "Day 1",
+			"yaxis": 9000,
+			"data1": 0
+		},
+		{
+			"xaxis": "Day 2",
+			"yaxis": 9000,
+			"data1": 0
+		},
+		{
+			"xaxis": "Day 3",
+			"yaxis": 9000,
+			"data1": 0
+		},
+		{
+			"xaxis": "Day 4",
+			"yaxis": 18000,
+			"data1": 0
+		},
+		{
+			"xaxis": "Day 5",
+			"yaxis": 0,
+			"data1": 0
+		},
+		{
+			"xaxis": "Day 6",
+			"yaxis": 0,
+			"data1": 0
+		},
+		{
+			"xaxis": "Day 7",
+			"yaxis": 0,
+			"data1": 0
+		}]
+	},
+	{
+		"chart4": [{
+			"yaxis": 45000,
+			"xaxis": "BP Petroleum"
+		}]
+	}],
+	"VehDetail_array": null,
+	"unmappedShipGrid_array": null,
+	"getDetailsGrid_array": null,
+	"refGrid_array": null
+}

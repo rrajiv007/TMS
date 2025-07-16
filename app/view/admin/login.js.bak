@@ -1,0 +1,466 @@
+Ext.define('CueTrans.view.admin.login', {
+    extend: "CueTrans.lib.plfTransScreen",
+    alias: 'widget.Login',
+    border: false,
+    region: "center",
+    cls: "cue-loginpage",
+    autoScroll: false,
+    autoHeight: true,
+    bodyBorder: false,
+    border: false,
+    //layout:"fit",
+    initComponent: function() {
+        var mainpage = this;
+        mainpage.startPainting();
+
+        //Toolbar Section
+        mainpage.toolbarSectionFlag = false;
+
+        //Login Main Section
+        plf.columns = 3
+		
+		var tmpMainSection = Ext.create("Ext.panel.Panel", {
+            layout: {
+                type: 'hbox',
+                align: 'center',
+                pack: 'center'
+            },
+            border: false,
+            width: plf.screenWidth,
+            height: plf.screenHeight
+        })
+		tmpMainSection.cls = "loginpage";
+        tmpMainSection.bodyCls = "loginpage";
+		
+		var tmpBanner=Ext.create("Ext.panel.Panel", {
+            layout: {
+                type: 'hbox',
+                align: 'center',
+                pack: 'center'
+            },
+            border: false           
+        })
+		
+		this.bannerCount = 0
+		this.bannerImg = Ext.create("Ext.Img",
+			{
+				src: "resources/images/login/banner_01.jpg",
+				width: 732,
+				height: 533
+			})
+			
+		var logo_banner = {
+            xtype: "container",
+			cls: "",
+            layout: {
+                type: "vbox",
+                align: "center",
+                pack: 'center'
+            },            
+            items: [this.bannerImg]
+        }
+		tmpBanner.add(logo_banner);
+		
+		
+        loginMainSection = Ext.create("Ext.panel.Panel", {
+            layout: {
+                type: 'hbox',
+                align: 'center',
+                pack: 'center'
+            },
+            border: false           
+        })
+		
+        //loginMainSection.cls = "loginpage";
+        //loginMainSection.bodyCls = "loginpage";
+        //this.bodyCls = "loginpage";
+
+        var logo_img = {
+            xtype: "container",
+			cls: "login_logo_container",
+            layout: {
+                type: "vbox",
+                align: "center",
+                pack: 'center'
+            },
+            width: 328,
+            height: 127,
+            items: [{
+                xtype: "image",
+                src: "resources/images/login/logo.png",
+                width: 267,
+                height: 45
+            }]
+        }
+		 var login_copy = {
+            xtype: "container",
+			cls: "login_poweredby_container",
+            layout: {
+                type: "vbox",
+                align: "center",
+                pack: 'center'
+            },
+            width: 328,
+            height: 30,
+            html:"Powered by Cuecent"
+        }
+		var tmpSigned=Ext.create("Ext.panel.Panel", {
+            layout: {
+                type: 'hbox'
+            },
+			width:250,
+			cls:"login_links",
+			items: [{xtype:"checkbox",width:20, cls:"keepmeSignedin_checkbox"},
+			{xtype:"container",width:103,html:"KEEP ME SIGNED IN", cls:"keepmeSignedin"},
+			{xtype: 'image',width:15,src:'resources/images/common/spacer.png',cls:"login_links_splitter"},
+			{xtype:"container",width:112,html:"FORGET PASSWORD", cls:"forgetPassword"}],
+            border: false           
+        })
+		
+		Ext.define('Carousel', {
+			 extend: 'Ext.data.Model',
+			 fields: [
+				 { name: 'imageSrc', type: 'string' },
+				 { name: 'title', type: 'string' },
+				{ name: 'alt', type: 'string' }
+			 ]
+		 });		
+		 Ext.define('Ext.store.Carousel', {
+		 extend: 'Ext.data.Store',
+		 model: 'Carousel',
+		 data: [{
+					imageSrc:"images/avus_gtr.jpg",
+					title:"avus",
+					alt: "avus"
+			   },{
+					imageSrc:"images/CroixDeFer.jpg",
+					title:"CroixDeFer",
+					alt: "CroixDeFer"
+			   },{
+					imageSrc:"images/flower.jpg",
+					title:"flower",
+					alt: "flower"
+			   },{
+					imageSrc:"images/grass.jpg",
+					title:"grass",
+					alt: "grass"
+			   },{
+					imageSrc:"images/stones.jpg",
+					title:"stones",
+					alt: "stones"
+			   }
+			]
+		});
+		
+/*        var profile_img = {
+            xtype: "container",
+            layout: {
+                type: "vbox",
+                align: "center",
+                pack: 'center'
+            },
+            height: 105,
+            items: [{
+                xtype: "image",
+                src: "resources/images/login/login_profile_img.png",
+                width: 92,
+                height: 92
+            }]
+        }	*/
+
+        loginControls = [{
+            xtype: "container",
+            //height: 533,
+			height: 533,
+            cls: "login_container",
+            layout: {
+                type: "vbox",
+                align: "center"
+            },
+            items: [
+                logo_img, {
+//                profile_img, {
+                    xtype: "textfield",
+					cls: "input-login_username",
+                    itemId: "strUserId",
+                    emptyText: 'USERNAME',
+                    //inputWrapCls:"x-form-text-wrap input-login-wrap",fieldCls:"input-login",
+                    inputWrapCls: "x-form-text-wrap input-login-wrap",
+                    fieldCls: "input-login1",
+                    width: 250,
+                    height: 44,
+                    labelWidth: 0,
+                    listeners: {
+                        "render": function(field) {
+                            field.focus(true, 1);
+                        }
+                    }
+
+                }, {
+                    xtype: "textfield",
+					cls: "input-login_password",
+                    itemId: "strPassword",
+                    inputType: 'password',
+                    emptyText: 'PASSWORD',
+                    fieldCls: "input-login1",
+                    width: 250,
+                    height: 44,
+                    labelWidth: 0,
+                    inputWrapCls: "x-form-text-wrap input-login-wrap"
+                },				
+				{
+                xtype: "image",
+                src: "resources/images/login/captchaaa.jpg",
+				cls: "input-login_captchaimg",
+                width: 250,
+                height: 44,
+				},
+				{
+                    xtype: "textfield",
+					cls: "input-login_captcha",
+                    itemId: "strCaptcha",                    
+                    emptyText: 'CAPTCHA',
+                    fieldCls: "input-login1",
+                    width: 250,
+                    height: 44,
+                    labelWidth: 0,
+                    inputWrapCls: "x-form-text-wrap input-login-wrap"
+                },
+				{
+                    xtype: "button",
+                    itemId: "btnLogin",
+                    baseCls: "login_btn",
+                    text: "LOGIN",
+                    width: 250,
+                    height: 44
+                },
+				tmpSigned,				
+				login_copy
+            ]
+        }]
+        loginMainSection.add(loginControls)
+		tmpMainSection.add(tmpBanner);
+		tmpMainSection.add(loginMainSection);
+        mainpage.ptrMainSection.setMargin(0)
+        mainpage.ptrMainSection.add(tmpMainSection)
+
+        /*
+		mainpage.eventHandlers = 
+			[
+				{
+					"controlid":"login",
+					"tasktype":"btnclick",
+					"input":["strUserId","strPassword"],
+					"service":"LoginServices"
+				}
+			];
+		*/
+
+        /*
+		mainpage.generateScreen();
+		
+		Ext.apply(this,
+			{
+				border:false,
+				items:
+				[
+					mainpage
+				]
+			}
+		);
+		*/
+        this.callParent(arguments);
+
+
+        form_obj = this;
+
+
+        form_obj.queryById("btnLogin").on("click",
+            function(controlobj, eventobj) {
+                form_obj.loginProcess(form_obj, controlobj, eventobj)
+            }, form_obj);
+
+        form_obj.queryById("strPassword").on("specialkey",
+            function(controlobj, eventobj) {
+                if (eventobj.getKey() == eventobj.ENTER) {
+                    form_obj.loginProcess(form_obj, controlobj, eventobj)
+                }
+            }, form_obj);
+
+        form_obj.queryById("strUserId").on("specialkey",
+            function(controlobj, eventobj) {
+                if (eventobj.getKey() == eventobj.ENTER) {
+                    form_obj.loginProcess(form_obj, controlobj, eventobj)
+                }
+            }, form_obj);
+
+
+        /*
+		form_obj.queryById("btnLogin").on("click",
+				function(controlobj,eventobj)
+				{
+					form_obj.Process(form_obj,controlobj,eventobj)					
+				},form_obj);	
+		*/
+		
+		// equivalent using TaskManager
+		
+		this.loginImageTask =  {
+			run: function()
+			{
+				console.log("resources/images/login/banner_0"+form_obj.bannerCount+".jpg")
+				form_obj.bannerCount = (form_obj.bannerCount % 3) + 1;
+				form_obj.bannerImg.setSrc("resources/images/login/banner_0"+form_obj.bannerCount+".jpg")			
+			},
+			interval:3000
+		};
+		
+		//Ext.TaskManager.start(form_obj.loginImageTask);
+		
+    },
+
+    forgotProcess: function(form_obj, controlobj, eventobj) {
+        url_tmp = "app/view/admin/ForgotPassword.js"
+    },
+
+    loginProcess: function(form_obj, controlobj, eventobj) {
+        ser_input_array = {};
+        form_obj.setLoading(true);
+        ser_input_array["methodName"] = "fetchTenantId";
+        ser_input_array["strUserId"] = form_obj.queryById("strUserId").getValue();
+        ser_input_array["strPassword"] = form_obj.queryById("strPassword").getValue();
+
+        var url_tmp = 'JMSServlet'
+        if (!form_obj.liveSetupFlag) {
+            if (ser_input_array["strUserId"] != "") {
+                url_tmp = "app/data/admin/" + ser_input_array["strUserId"] + ".json"
+            } else {
+                url_tmp = "app/data/admin/" + "login.json"
+            }
+        }
+
+        Ext.Ajax.request({
+            url: url_tmp,
+            //url : 'login.json',
+            params: {
+
+                workFlowName: "CoreTenantService",
+                workFlowParams: Ext.JSON.encode(ser_input_array)
+            },
+            success: function(result) {
+                console.log(result.responseText);
+                console.log("success");
+                var response_data = Ext.JSON.decode(result.responseText);
+                //console.log(response_data);
+
+                var in_json_data = Ext.JSON.decode(result.responseText);
+
+                if (in_json_data["strFailureMsg"] != "" && in_json_data["strFailureMsg"] != undefined) {
+                    Ext.Msg.alert('Failure', in_json_data["strFailureMsg"]);
+                    form_obj.setLoading(false);
+                    return;
+                }
+
+                if (in_json_data["strResponseMsg"] != "" && in_json_data["strResponseMsg"] != undefined) {
+                    Ext.Msg.alert('Failure', in_json_data["strResponseMsg"]);
+                    form_obj.setLoading(false);
+                    //alert(in_json_data["strResponseMsg"]);
+                    return;
+                }
+				
+				//Ext.TaskManager.stop(this.loginImageTask);
+                plf.setPlfDefaults();
+
+                Ext.each(in_json_data["hdrcache"],
+                    function(hdrcache_obj) {
+                        for (var key in hdrcache_obj) {
+                            var attrName = key;
+                            if (key == "USER_NAME") {
+                                plf.viewport.ptrNorthPanel.userNameContainer.update(hdrcache_obj);
+                            }
+                        }
+                    }
+                )
+
+                plf.viewport.ptrSouthPanel.display()
+                plf.viewport.ptrNorthPanel.display()
+                    //plf.viewport.ptrWestPanel.display()
+
+
+                form_obj.setLoading(false);
+                form_obj.removeAll();
+                plf.viewport.ptrContentPanel.removeAll();
+                plf.viewport.ptrContentPanel = Ext.create('CueTrans.view.common.ContentPanel')
+                    //plf.viewport.ptrContentPanel.setHeight(plf.screenHeight-plf.appMarginHeight)
+                    //plf.viewport.ptrContentPanel.setWidth(plf.screenWidth-plf.appMargin)
+                plf.viewport.ptrContentPanel.setHeight(plf.screenHeight - plf.appMarginHeight)
+                plf.viewport.ptrContentPanel.setWidth(plf.screenWidth)
+                form_obj.add(plf.viewport.ptrContentPanel)
+
+
+                plf.viewport.ptrEastPanel = Ext.create('CueTrans.view.common.EastPanel')
+                plf.viewport.add(plf.viewport.ptrEastPanel)
+                plf.viewport.ptrEastPanel.display()
+
+
+                homeStoreValue = in_json_data["consoleTransaction_array"]
+                if (
+                    Ext.data.StoreManager.containsKey("homePageStore") //load grid store
+                    &&
+                    homeStoreValue != "" &&
+                    homeStoreValue != undefined
+                ) {
+                    var homePageStore = Ext.data.StoreManager.lookup("homePageStore")
+                    homePageStore.clearFilter();
+                    homePageStore.loadData(homeStoreValue, false);
+
+                    var masterIconCollection = homePageStore.queryBy(function(rec) {
+                        if (rec.data.entityType == 'master')
+                            return true;
+                    });
+
+                    var masterIconStore = Ext.data.StoreManager.lookup("masterIconStore")
+                    masterIconStore.clearFilter();
+                    masterIconStore.loadData(masterIconCollection.getRange(), false);
+                    /*
+						masterIconStore.filterBy(function(rec){
+							 if(rec.data.menuText == 'Calendar')
+								 return true;
+						})
+						*/
+
+                    var transIconCollection = homePageStore.queryBy(function(rec) {
+                        if (rec.data.entityType == 'transaction')
+                            return true;
+                    });
+
+                    var transIconStore = Ext.data.StoreManager.lookup("transIconStore")
+                    transIconStore.clearFilter();
+                    transIconStore.loadData(transIconCollection.getRange(), false);
+
+                    var bpcIconCollection = homePageStore.queryBy(function(rec) {
+                        if (rec.data.entityType == 'bpc')
+                            return true;
+                    });
+
+                    var bpcIconStore = Ext.data.StoreManager.lookup("bpcIconStore")
+                    bpcIconStore.clearFilter();
+                    bpcIconStore.loadData(bpcIconCollection.getRange(), false);
+
+                    homePageStore.filterBy(function(rec) {
+                        if (rec.data.entityType != 'bpc')
+                            return true;
+                    });
+                }
+
+            },
+            failure: function(result) {
+                alert("failure");
+                alert(result.responseText);
+                form_obj.setLoading(false);
+                // todo
+            }
+        });
+
+    }
+});

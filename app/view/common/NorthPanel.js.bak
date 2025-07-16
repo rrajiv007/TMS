@@ -1,0 +1,82 @@
+/*
+File Version: 1.0.0.1
+File Name 	: NorthPanel.js
+/* Modified By			Date						ID					*/
+/* Rajiv R				03/09/2014					57346				*/
+/* Rajiv R				04/09/2014					57410				*/
+Ext.define('CueTrans.view.common.NorthPanel', {
+    extend: 'Ext.panel.Panel',
+    alias: 'widget.northpanel',
+    region: "north",
+    UserImagePath: 'resources/images/users/user_default.png',
+    bodyPadding: 0,
+    UserName: "Smith",
+    initComponent: function() {
+	
+        this.userNameContainer = Ext.create("Ext.Component", {
+            tpl: '<div class="user_name"><p class="pan1">Welcome</p><p class="pan2">{USER_NAME}!</p></div>',
+            //columnWidth: .2,
+            border: false,
+			cls:'user_name_container',
+            data: {
+                "USER_NAME": ""
+            }
+        })
+
+        var me = this;
+        Ext.apply(this, {
+            height: 0,
+            border: false,
+            items: [{
+                layout: 'column',
+                columns: 8,
+                border: false,
+                baseCls: 'northpanel-header',
+                split: false,
+                cls: 'banner',
+                itemId: 'headerPanel',
+                items: [
+					{
+                        html: '<div class="product_logo"><img src="resources/images/common/logo_patch.png"></div>',
+						border: false
+                    }, {
+                        html: '<div class="logo_splitter"></div><div class="appTitle"><p>Transport</p><p>Management System</p></div><div class="logo_splitter"></div>',
+                        //columnWidth: .3,
+                        border: false
+                    }, {
+                        html: '<div><img src="resources/images/common/logo_patch.png"></div>',
+						cls:'customer_logo',
+						border: false
+                    }, {
+                        html: '&nbsp;',
+                        columnWidth: .8,
+                        border: false
+                    },
+                    {
+                        xtype: 'image',
+						src: 'resources/images/users/user_default.png',
+                        height: 46,
+                        width: 60,
+                        cls: 'logout',
+                        listeners: {
+                            el: {
+                                click: function() {
+                                    location.href = ""
+                                }
+                            }
+                        }
+                    },
+                    this.userNameContainer,
+                ]
+            }]
+
+        });
+
+        this.callParent(arguments);
+    },
+    display: function() {
+        this.setHeight(46);
+        //this.doComponentLayout();
+    }
+
+});

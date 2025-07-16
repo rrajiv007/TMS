@@ -1,0 +1,121 @@
+Ext.define('CueTrans.view.admin.SwitchContextOU', 
+{
+	extend:"CueTrans.lib.plfTransScreen",
+	initComponent: function()
+	{
+		
+		//var mainpage = Ext.create("CueTrans.lib.plfTransScreen");
+		var mainpage = this;
+		mainpage.startPainting();
+		mainpage.screenName = "Switch OU and Role";
+		
+		// Add Toolbar
+		mainpage.toolbarSectionFlag=true;
+		//mainpage.toolbarActions=[""]
+		
+		//Add Keyfields
+		mainpage.keyFields=["strOrgName"]
+		
+		//Location Header Section starts
+		plf.columns=1
+		SwitchContextHdrColumn = plf.addColumnSection({title:""});
+		
+		
+		LocationFormCtrl=
+		[ 
+			//plf.addBlank(),
+			plf.addCombo({"label":"OU",id:"strOrgName"}),
+			/*plf.addBlank(),
+			plf.addBlank(),
+			plf.addBlank(),*/
+			plf.addCombo({"label":"Role",id:"strDefaultRole"}),
+			/*plf.addBlank(),
+			plf.addBlank(),
+			plf.addBlank(),*/
+			plf.addCombo({"label":"Language",id:"strLanguageCode"}),
+			/*plf.addBlank(),
+			plf.addBlank(),
+			plf.addBlank(),*/
+			plf.addButton({"label":"OK",id:"searchBtn"}),
+			plf.addButton({"label":"Cancel",id:"searchBtn1"})
+			]		
+		SwitchContextHdrColumn.add(LocationFormCtrl);
+		//Location Header Section Ends
+		SwitchContextHdrColumn.add(plf.addStripLine({}));
+		//Add Child Sections
+		mainpage.ptrMainSection.add(SwitchContextHdrColumn)//Add Header Section to Main Page
+		
+		//History Data Section
+		//mainpage.dataHistorySectionFlag=true;
+		
+		// Event Handlers Mapping Begins
+		mainpage.eventHandlers = 
+		[		
+				{
+				"controlid":"",
+				"tasktype":"onload",
+				"input":[""],
+				"service":"CoreAdminService",
+				"methodName":"initRoleTS"
+			},
+			{
+				"controlid":"strOrgName",
+				"tasktype":"onchange",
+				"input":["strOrgName"],
+				"service":"CoreAdminService",
+				"methodName":"onchangeOURoleTS"
+				}
+			/*{
+					"controlid":"searchBtn",
+					"tasktype":"btnclick",
+					"input":["strLocCodeFrom","strLocCodeTo","strLocName","strRegion","strLocType","strCity","strState","strCountry","strStatus"],
+					"service":"CoreLocationService",
+					"methodName":"initLocationMasterSearchScrTS"
+					},
+{  
+					"controlid":"searchBtn1",
+					"tasktype":"btnclick",
+					"input":["strLocCodeFrom","strLocCodeTo","strLocName","strRegion","strLocType","strCity","strState","strCountry","strStatus"],
+					"service":"CoreLocationService",
+					"methodName":"initLocationMasterSearchScrTS"
+					}					 */
+		];
+		//Event Handlers Mapping Ends
+		mainpage.hlpLinks=
+		{
+						
+		}
+
+		//Generate Screen Section
+		//mainpage.generateScreen();
+			mainpage.screenModes=
+		{
+			/*"open":
+			{
+				"enableAll":true,
+				"except":["strLocCode"]
+			},
+			"locked":
+			{
+				"enableAll":false,
+				"except":["strLocCode"]
+			},
+			"active":
+			{
+				"enableAll":false,
+				"except":["strLocCode"]
+			}*/			
+		}
+		
+		
+	/*	Ext.apply(this,
+		{
+			items:
+			[
+				mainpage
+			]
+		});*/
+		this.callParent(arguments);
+		
+	}
+});

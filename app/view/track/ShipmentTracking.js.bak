@@ -1,0 +1,143 @@
+Ext.define('CueTrans.view.track.ShipmentTracking', 
+{
+	extend:"CueTrans.lib.plfTransScreen",
+	initComponent: function()
+	{
+		//var mainpage = Ext.create("CueTrans.lib.plfTransScreen");
+		var mainpage = this;
+		mainpage.startPainting();
+		mainpage.screenName = "Shipment Tracking Summary";
+		//Vehicle Demand Planning Search Section Begins
+		plf.columns=3
+		helpOnTrackTraceHdrCollapse = plf.addCollapseSection({title:"Search Criteria",collapsed: false,btnID:"searchBtn"},this);
+        mainpage.toolbarSectionFlag=true;	
+		/*	mainpage.toolbarLinks=
+		[
+			{"name":"Shipment Tracking Details","linkid":"trk_ShipTrack"}
+		]*/
+	 	helpOnTrackTraceFormCtrl=
+		[
+			plf.addText({"label":"Request No From",id:"strRequestNoFrom","anywhereSearch":"true"}),
+			plf.addText({"label":"Request No To",id:"strRequestNoTo","anywhereSearch":"true"}),
+			plf.addDate({"label":"Request Date From",id:"dtRequestDateFrom"}),
+			plf.addDate({"label":"Request Date To",id:"dtRequestDateTo"}),
+			plf.addCombo({"label":"Origin",id:"strOrigin"}),
+			plf.addCombo({"label":"Destination",id:"strDestination"}),
+			plf.addCombo({"label":"Priority",id:"strPriority"}),
+			plf.addHlpText({"label":"Customer Code",id:"strCustomerCode",hlpLinkID:"customercode"},this),	
+			//plf.addBlank(),
+			//plf.addBlank(),
+			//plf.addButton({"label":"Track Shipments",id:"searchBtn","tooltip":"Click here to track the shipments."}),
+			//plf.addBlank(),
+		]
+		
+		helpOnTrackTraceHdrCollapse.add(helpOnTrackTraceFormCtrl);
+		//Driver Search Section Ends
+		
+		//Driver Grid Section Begins
+		customerContractSummaryObj=
+		[
+			{columnname:"Request No",dataname:"TRANS_REQ_NO",datatype:"string",width:150,linkId:"reqnolink",tooltip:"Click here to launch the shipment tracking details screen."},
+			{columnname:"Request Date",dataname:"REQUEST_DATE",datatype:"string",width:100},
+			{columnname:"Shipment No",dataname:"SHIPMENT_NO",datatype:"string",width:150},
+			{columnname:"Load No",dataname:"LOAD_NO",datatype:"string",width:130},
+			{columnname:"Customer Name",dataname:"CUST_NAME",datatype:"string",width:130},
+			{columnname:"Origin",dataname:"ORIGIN",datatype:"string",width:100},
+			{columnname:"Destination",dataname:"DESTINATION",datatype:"string",width:100},
+			{columnname:"Commodity",dataname:"COMMODITY",datatype:"string",width:100},
+			{columnname:"Ref Doc No",dataname:"REF_DOC_NO",datatype:"string",width:100},
+			{columnname:"Status",dataname:"STATUS",datatype:"string",width:130}
+		]
+		helpOnTrackTraceGridDtl=
+		{
+			title:"",
+			id:"custContGrid",
+			detail:customerContractSummaryObj,
+			removeAddDelete:true,
+			readOnly:true
+		   }
+		helpGridSection = plf.addGrid(helpOnTrackTraceGridDtl,this)
+		//Driver Grid Section Ends
+		
+		//Add Child Sections
+		mainpage.ptrMainSection.add(helpOnTrackTraceHdrCollapse)//Add Header Section to Main Page
+		mainpage.ptrMainSection.add(helpGridSection) //Add Grid Section to Main Page
+		
+		// Event Handlers Mapping Begins
+		mainpage.eventHandlers = 
+		[
+		{
+				"controlid":"",
+				"tasktype":"onload",
+				"input":[""],
+				"service":"TMSCoreTransportTS",
+				"methodName":"initShipTrackSearchScrTS"
+			},	
+		{       
+				"controlid":"searchBtn",
+				"tasktype":"btnclick",
+				"input":["strRequestNoFrom","strRequestNoTo","dtRequestDateFrom","dtRequestDateTo","strOrigin","strDestination",
+				         "strPriority","strCustomerCode"],
+			    "service":"TMSCoreTransportTS",
+				"methodName":"fetchAllShipTrackSearchTS"
+		}
+			
+		];
+		mainpage.screenLinks=
+		{
+			/*"trk_ShipTrack":
+				{
+					"dest":"track.ShipmentTrackingDetails",
+					"hdr":[
+							{"src":"","dest":""}							
+							],
+					"grid":[
+							{"src":"","dest":""}
+							]
+				},*/
+				
+			"reqnolink":
+				{
+					"dest":"track.ShipmentTrackingDetails",
+					"hdr":[
+							{"src":"","dest":""}							
+							],
+					"grid":[
+							{"src":"TRANS_REQ_NO","dest":"strRequestNo"}
+							]
+				}
+		
+		}
+		mainpage.hlpLinks=
+		{			
+				"customercode":
+				{
+					"hlpType":"Header",
+					"hlpScreen":"jm_master.CustomerHelp",
+					"send":[
+							{"parent":"","child":""}
+						   ],
+					"receive":[
+							{"parent":"strCustomerCode","child":"CUST_CODE"}
+							]
+				}
+					
+		}	
+			
+		//Event Handlers Mapping Ends
+			
+		//Generate Screen Section
+		/*mainpage.generateScreen();
+		
+		
+		Ext.apply(this,
+		{
+			items:
+			[
+				mainpage
+			]
+		});*/
+		this.callParent(arguments);
+		
+	}
+});

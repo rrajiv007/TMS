@@ -1,0 +1,710 @@
+/************************************************************************************************
+							      Modification History        									                               	
+************************************************************************************************
+Description	  :	                                                                    		         
+Author		  :	 CUETRANS																                                         
+Version		  :	1.0.1
+************************************************************************************************	
+Version 	Modified By	     Date	      Defect ID			               Remarks             
+************************************************************************************************	
+1.0.1		Bhuvan			05-Feb-2016	  69995	                           Added var for all local variable		                                   
+************************************************************************************************/
+Ext.define('CueTrans.view.PDOFinance.PDODELViewCarrierBill', 
+{
+	extend:"CueTrans.lib.plfTransScreen",
+	initComponent: function()
+	{
+	    var mainpage = this;
+		mainpage.startPainting();
+		mainpage.screenName = "Carrier Bill Details";
+		
+		// Add Toolbar
+		mainpage.toolbarSectionFlag=true;
+		mainpage.liveScreenFlag=true;
+		/*
+		mainpage.toolbarActions= 
+			[
+				{
+					"name": "Save",
+					"tooltip": "Click here to save the carrier bill details."
+				},
+				{
+					"name": "Delete",
+					"tooltip": "Click here to delete the carrier bill details."
+				},
+				{
+					"name": "Submit",
+					"tooltip": "Click here to submit the contract bill details."
+				},
+            ]
+		*/
+		
+		
+
+
+		plf.columns=4
+		var parentForm =this;
+		var BillHdrColumn = plf.addColumnSection({});		
+		if(plf.defaultLayout==4)
+		{
+			plf.columns=4
+			
+			var BillHdrCtrl=		
+			[	
+			
+				plf.addDisplayOnly({"label":"Carrier Bill ID",id:"strBillNo"}),	
+				plf.addDisplayOnly({"label":"Carrier Bill Description",id:"strBillDesc"}),
+				plf.addDisplayOnly({"label":"Carrier Code",id:"strCarCode"}),	
+				plf.addDisplayOnly({"label":"Status",id:"strStatus"}),
+				plf.addDisplayOnly({"label":"Carrier Bill Period",id:"strBillPeriod"}),
+				//plf.addText({"label":"Bill Period To",id:"strCarCode"}),
+				plf.addDisplayOnly({"label":"No of Contractor Bills",id:"iNoCons"}),	
+				plf.addDisplayOnly({"label":"No of Trips",id:"iNoTrips"}),	
+				plf.addDisplayOnly({"label":"No of Loads",id:"iNoLoads"}),
+				plf.addDisplayOnly({"label":"Amount",id:"strAmount"})
+				//plf.addButton({"label":"Recalculate",id:"btnRecalc"})		
+			]
+		
+		}
+		
+		else
+		{
+			var BillHdrCtrl=		
+			[	
+				plf.addDisplayOnly({"label":"Carrier Bill ID",id:"strBillNo"}),	
+				plf.addDisplayOnly({"label":"Carrier Bill Description",id:"strBillDesc"}),
+				plf.addDisplayOnly({"label":"Carrier Code",id:"strCarCode"}),	
+				plf.addDisplayOnly({"label":"Status",id:"strStatus"}),
+				plf.addDisplayOnly({"label":"Bill Period",id:"strBillPeriod"}),
+				//plf.addText({"label":"Bill Period To",id:"strCarCode"}),
+				plf.addDisplayOnly({"label":"No of Contractor Bills",id:"iNoCons"}),	
+				plf.addDisplayOnly({"label":"No of Trips",id:"iNoTrips"}),	
+				plf.addDisplayOnly({"label":"No of Loads",id:"iNoLoads"}),
+				plf.addDisplayOnly({"label":"Amount",id:"strAmount","weightPrecision":3})
+				//plf.addButton({"label":"Recalculate",id:"btnRecalc"})					
+				
+			]
+		}			
+		BillHdrColumn.add(BillHdrCtrl)		
+		
+		var btnSearch=[
+						plf.addButton({id:"btnTrip",label:"Search Trips",tooltip:"Click here to search trips.",
+							"handler": function() 
+							{
+								parentForm.launchHlpLink("Trips")						
+							}})
+						];
+		
+		//Load Details
+		
+		var LoadDetailsColumn = plf.addColumnSection({"title":"Load Details"},this);	
+		var loadDetailsGridObj=			
+		[   
+			{columnname:"Key Field",dataname:"KEY_FIELD",datatype:"string",width:150,hidden:true},
+			{columnname:"Trip No",dataname:"TRIP_NO",datatype:"string",width:150},
+			{columnname:"Trip Closure Date",dataname:"TRIP_CLS_DT",datatype:"string",width:150},
+			{columnname:"Load No",dataname:"LOAD_NO",datatype:"string",width:120},
+			{columnname:"Load Scheduled Date",dataname:"SCH_DT",datatype:"string",width:120},
+			{columnname:"Load Closure Date",dataname:"LOAD_CLS_DT",datatype:"string",width:150},
+			{columnname:"Load Leg Type",dataname:"LOAD_TYPE",datatype:"string",width:120},
+			{columnname:"Load Category",dataname:"LOAD_CAT",datatype:"string",width:120},
+			{columnname:"Journey Plan No",dataname:"JOURNEY_PLAN_NO",datatype:"string",width:120},
+			{columnname:"Journey Type",dataname:"JOURNEY_TYPE",datatype:"string",width:120},
+			{columnname:"Scheduled Vehicle No",dataname:"VEH_CODE",datatype:"string",width:150},
+			{columnname:"Scheduled Vehicle Category",dataname:"SCH_CAT",datatype:"string",width:200},
+			{columnname:"Scheduled Contract No",dataname:"CONTRACT_NO",datatype:"string",width:150},
+			
+			{columnname:"Scheduled Contractor Name",dataname:"CONTRACTOR_NAME",datatype:"string",width:200},
+			{columnname:"Reported Vehicle No",dataname:"REP_VEH",datatype:"string",width:150},
+			{columnname:"Reported Contract No",dataname:"REP_CON",datatype:"string",width:150},
+			{columnname:"Reported Contractor Name",dataname:"REP_CON_NM",datatype:"string",width:200},
+			
+			{columnname:"Loading Point",dataname:"LD_PT",datatype:"string",width:120},
+			
+			{columnname:"Origin",dataname:"ORG",datatype:"string",width:170},
+			{columnname:"Destination",dataname:"DEST",datatype:"string",width:170},
+			//{columnname:"From Region",dataname:"FRM_REG",datatype:"string",width:170},
+			//{columnname:"To Region",dataname:"TO_REG",datatype:"string",width:170},
+			{columnname:"Finance From Region",dataname:"FIN_FROM_REG",datatype:"string",width:170},
+			{columnname:"Finance To Region",dataname:"FIN_TO_REG",datatype:"string",width:170},
+			{columnname:"Unloading Point",dataname:"ULD_PT",datatype:"string",width:120},
+			{columnname:"Load Weight",dataname:"LOAD_WT",datatype:"string",width:100,colAlign:'right',weightPrecision:3},
+			{columnname:"Load Distance",dataname:"LOAD_DIST",datatype:"string",width:100,colAlign:'right',weightPrecision:3},
+			{columnname:"Load Leg Amount",dataname:"CHARGE_AMT",datatype:"string",width:120,colAlign:'right',weightPrecision:3},
+			
+			{columnname:"Adjustments",dataname:"ADJ",datatype:"string",width:100,editControl:"textbox",colAlign:'right',weightPrecision:3},			
+			{columnname:"Remarks",dataname:"REMARKS",datatype:"string",width:100,editControl:"textbox"},
+			{columnname:"Total Load Leg Amount",dataname:"TOT_LOAD_LEG_AMT",datatype:"string",width:150,colAlign:'right',weightPrecision:3},
+			{columnname:"Generated Date",dataname:"GEN_DATE",datatype:"string",width:120},
+			
+			{columnname:"Contractor Bill No",dataname:"CONTRACT_BILL_NO",datatype:"string",width:170},			
+			{columnname:"Operations Approval",dataname:"OPS_APP",datatype:"string",width:150},
+			{columnname:"Approved By",dataname:"OPS_APP_BY",datatype:"string",width:100},
+			{columnname:"PDO Approval",dataname:"PDO_APP",datatype:"string",width:120},
+			
+			{columnname:"Approved By",dataname:"PDO_APP_BY",datatype:"string",width:100},
+			{columnname:"Paid to OTO",dataname:"PAID_OTO",datatype:"string",width:100},
+			{columnname:"Updated By",dataname:"UPDATE_BY",datatype:"string",width:100}			
+		]
+		var loaddetGridDtl=			
+		{
+			title:"",
+			id:"loadDetailsGrid",
+			detail:loadDetailsGridObj,
+			visibleRow:9,
+			removeAddDelete:true,
+			removePaging:true,
+			removeTbar:false,
+			//selRowProcess:"Y",
+			//tool:btnSearch,
+			columnWidth:1
+		
+		}
+		var loadGridSection = plf.addGrid(loaddetGridDtl,this)
+		LoadDetailsColumn.add(loadGridSection);
+		
+		var LoadBtnColumn = plf.addColumnSection({columnWidth:1});	
+		var BtnCtrl=							
+		[				
+			plf.addButton({"label":"Save","id":"btnSave"}),			
+		    /*plf.addButton({"label":"Delete",id:"btnDelete"}),*/
+			plf.addButton({"label":"Submit",id:"btnSubmit"}),
+			plf.addButton({"label":"Rollback",id:"btnRollback"})
+			//plf.addButton({"label":"Print Bank Advise",id:"btnInvoice"})
+		]
+		LoadBtnColumn.add(BtnCtrl);
+		//LoadDetailsColumn.add(LoadBtnColumn);
+		var LoadSummaryColumn = plf.addColumnSection({"title":"Load Summary"});	
+		var LoadSummaryGridFieldObj=			
+		[   
+			{columnname:"Load Type",dataname:"LOAD_TYPE",datatype:"string",width:150,hidden:true},
+			//{columnname:"From Location",dataname:"FROM_LOC",datatype:"string",width:150},
+			{columnname:"Finance From Region",dataname:"FIN_FROM_REG",datatype:"string",width:100},
+			//{columnname:"From Region",dataname:"FROM_REG",datatype:"string",width:100},
+			//{columnname:"To Location",dataname:"TO_LOC",datatype:"string",width:100},
+			//{columnname:"To Region",dataname:"TO_REG",datatype:"string",width:100},
+			{columnname:"Finance To Region",dataname:"FIN_TO_REG",datatype:"string",width:100},
+			{columnname:"No. of Loads",dataname:"TOT_LEGS",datatype:"string",width:100},
+			{columnname:"Rate/Load",dataname:"AMT_LEGS",datatype:"string",datatype:"string",width:100,colAlign:'right'},
+			{columnname:"Total Amount",dataname:"TOT_AMT",datatype:"string",width:130,colAlign:'right'}
+		]
+		var LoadSummaryGridDtl=			
+		{
+			title:"",
+			id:"LoadSummaryGrid",
+			detail:LoadSummaryGridFieldObj,
+			visibleRow:8,
+			readonly:true,
+			removeAddDelete:true,
+			removePaging:true,
+			removeTbar:false,
+			widthBasis: "Flex",
+			groupByField: 'LOAD_TYPE',
+			columnWidth:1		
+		}
+		var LoadSummaryGridSection = plf.addGrid(LoadSummaryGridDtl,this)		
+			LoadSummaryColumn.add(LoadSummaryGridSection);			
+		
+		var LoadTypeColumn = plf.addColumnSection({columnWidth:1});	
+		var LoadTypeBtnCtrl=							
+		[	
+			plf.addBlank({}),	
+			plf.addBlank({}),							
+		    plf.addButton({"label":"Print Summary",id:"LoadTypePrint"}),												
+			plf.addButton({"label":"Print Detail",id:"LoadTypeDtlPrint"}),
+			plf.addBlank({})
+		]
+		LoadTypeColumn.add(LoadTypeBtnCtrl);
+		//LoadSummaryColumn.add(LoadTypeColumn);
+		
+		
+		var OTOStandardColumn = plf.addColumnSection({"title":"OTO Standard"});	
+		var OTOStandardGridFieldObj=			
+		[   
+			{columnname:"Load Type",dataname:"GRP_OTOSTD",datatype:"string",width:150,hidden:true},
+			//{columnname:"From Location",dataname:"FROM_LOC",datatype:"string",width:150},
+			{columnname:"Finance From Region",dataname:"FIN_FROM_REG",datatype:"string",width:100},
+			//{columnname:"From Region",dataname:"FROM_REG",datatype:"string",width:100},
+			//{columnname:"To Location",dataname:"TO_LOC",datatype:"string",width:100},
+			//{columnname:"To Region",dataname:"TO_REG",datatype:"string",width:100},
+			{columnname:"Finance To Region",dataname:"FIN_TO_REG",datatype:"string",width:100},
+			{columnname:"No. of Loads",dataname:"TOT_LEGS",datatype:"string",width:100},
+			{columnname:"Rate/Load",dataname:"AMT_LEGS",datatype:"string",datatype:"string",colAlign:'right',width:100},
+			{columnname:"Total Amount",dataname:"TOT_AMT",datatype:"string",width:130,colAlign:'right'}
+		]
+		var OTOStandardGridDtl=			
+		{
+			title:"",
+			id:"OTOStandardGrid",
+			detail:OTOStandardGridFieldObj,
+			visibleRow:8,
+			readonly:true,
+			removeAddDelete:true,
+			removePaging:true,
+			removeTbar:false,
+			widthBasis: "Flex",
+			groupByField: 'GRP_OTOSTD',
+			columnWidth:1
+		}
+		var OTOStandardGridSection = plf.addGrid(OTOStandardGridDtl,this)		
+			OTOStandardColumn.add(OTOStandardGridSection);	
+		
+		var OTOColumn = plf.addColumnSection({columnWidth:1});	
+		var OTOBtnCtrl=							
+		[	
+			plf.addBlank({}),	
+			plf.addBlank({}),							
+		    plf.addButton({"label":"Print Summary",id:"OTOPrint"}),												
+			plf.addButton({"label":"Print Detail",id:"OTODtlPrint"}),		
+			plf.addBlank({})
+		]
+		OTOColumn.add(OTOBtnCtrl);
+		//OTOStandardColumn.add(OTOColumn);
+		
+		var SumitomoColumn = plf.addColumnSection({"title":"Sohar Sumitomo"});	
+		var SumitomoGridFieldObj=			
+		[   
+			{columnname:"Load Type",dataname:"GRP_SUMITOMO",datatype:"string",width:150,hidden:true},
+			//{columnname:"From Location",dataname:"FROM_LOC",datatype:"string",width:150},
+			{columnname:"Finance From Region",dataname:"FIN_FROM_REG",datatype:"string",width:100},
+			//{columnname:"From Region",dataname:"FROM_REG",datatype:"string",width:100},
+			//{columnname:"To Location",dataname:"TO_LOC",datatype:"string",width:100},
+			//{columnname:"To Region",dataname:"TO_REG",datatype:"string",width:100},
+			{columnname:"Finance To Region",dataname:"FIN_TO_REG",datatype:"string",width:100},
+			{columnname:"No. of Loads",dataname:"TOT_LEGS",datatype:"string",width:100},
+			{columnname:"Rate/Load",dataname:"AMT_LEGS",datatype:"string",datatype:"string",colAlign:'right',width:100},
+			{columnname:"Total Amount",dataname:"TOT_AMT",datatype:"string",width:130,colAlign:'right'}
+		]
+		var SumitomoGridDtl=			
+		{
+			title:"",
+			id:"SumitomoGrid",
+			detail:SumitomoGridFieldObj,
+			visibleRow:8,
+			readonly:true,
+			removeAddDelete:true,
+			removePaging:true,
+			removeTbar:false,
+			widthBasis: "Flex",
+			groupByField: 'GRP_SUMITOMO',
+			columnWidth:1
+		}
+		var SumitomoGridSection = plf.addGrid(SumitomoGridDtl,this)		
+			SumitomoColumn.add(SumitomoGridSection);	
+		
+		var SumiBtnColumn = plf.addColumnSection({columnWidth:1});	
+		var SumiBtnCtrl=							
+		[	
+			plf.addBlank({}),	
+			plf.addBlank({}),							
+		    plf.addButton({"label":"Print Summary",id:"SumitoPrint"}),												
+			plf.addButton({"label":"Print Detail",id:"SumitoDtlPrint"}),	
+			plf.addBlank({})
+		]
+		SumiBtnColumn.add(SumiBtnCtrl);
+		//SumitomoColumn.add(SumiBtnColumn);
+		//Dquam sumito start
+		var DuqmSumitomoColumn = plf.addColumnSection({"title":"Duqm Sumitomo"});	
+		var DuqmSumitomoGridFieldObj=			
+		[   
+			{columnname:"Load Type",dataname:"GRP_DUQMSUMITOMO",datatype:"string",width:150,hidden:true},
+			//{columnname:"From Location",dataname:"FROM_LOC",datatype:"string",width:150},
+			{columnname:"Finance From Region",dataname:"FIN_FROM_REG",datatype:"string",width:100},
+			//{columnname:"From Region",dataname:"FROM_REG",datatype:"string",width:100},
+			//{columnname:"To Location",dataname:"TO_LOC",datatype:"string",width:100},
+			//{columnname:"To Region",dataname:"TO_REG",datatype:"string",width:100},
+			{columnname:"Finance To Region",dataname:"FIN_TO_REG",datatype:"string",width:100},
+			{columnname:"No. of Loads",dataname:"TOT_LEGS",datatype:"string",width:100},
+			{columnname:"Rate/Load",dataname:"AMT_LEGS",datatype:"string",datatype:"string",colAlign:'right',width:100},
+			{columnname:"Total Amount",dataname:"TOT_AMT",datatype:"string",width:130,colAlign:'right'}
+		]
+		var DuqmSumitomoGridDtl=			
+		{
+			title:"",
+			id:"DuqmSumitomoGrid",
+			detail:DuqmSumitomoGridFieldObj,
+			visibleRow:8,
+			readonly:true,
+			removeAddDelete:true,
+			removePaging:true,
+			removeTbar:false,
+			widthBasis: "Flex",
+			groupByField: 'GRP_DUQMSUMITOMO',
+			columnWidth:1
+		}
+		var DuqmSumitomoGridSection = plf.addGrid(DuqmSumitomoGridDtl,this)		
+			DuqmSumitomoColumn.add(DuqmSumitomoGridSection);	
+		
+		var DuqmSumiBtnColumn = plf.addColumnSection({columnWidth:1});	
+		var DuqmSumiBtnCtrl=							
+		[	
+			plf.addBlank({}),	
+			plf.addBlank({}),							
+		    plf.addButton({"label":"Print Summary",id:"DuqmSumitoPrint"}),	
+			plf.addButton({"label":"Print Detail",id:"DuqmSumitodtlPrint"}),						
+			plf.addBlank({})
+		]
+		DuqmSumiBtnColumn.add(DuqmSumiBtnCtrl);
+		//DuqmSumitomoColumn.add(DuqmSumiBtnColumn);
+		//Dquam Sumitomo end
+		var ContractorColumn = plf.addColumnSection({"title":"Contractor Bill Summary"});	
+		var ContractorGridFieldObj=			
+		[   
+			{columnname:"Contractor Bill No",dataname:"INVOICE_NO",datatype:"string",width:150/*,linkId:"finContView","tooltip":"Click here to view contractor bill details."*/},
+			{columnname:"Contract No",dataname:"CONTRACT_NO",datatype:"string",width:150},
+			{columnname:"Contractor Name",dataname:"CONTRACT_NM",datatype:"string",width:100},
+			{columnname:"Contractor Remarks",dataname:"CONTRACT_RMKS",datatype:"string",width:100},
+			{columnname:"Vehicle Regn No",dataname:"VEH_NO",datatype:"string",width:100},
+			//{columnname:"Total Load Legs",dataname:"TOT_LEGS",datatype:"string",width:100},
+			{columnname:"Bill Amount",dataname:"BILL_AMT",datatype:"string",datatype:"string",width:100,colAlign:'right'},
+			{columnname:"No of Trips Processed",dataname:"NO_TRIPS",datatype:"string",width:130,colAlign:'right'},
+			{columnname:"No of Loads Processed",dataname:"NO_LOAD",datatype:"string",width:130,colAlign:'right'},
+			{columnname:"Generated Date",dataname:"GEN_DATE",datatype:"string",width:130}
+			
+		]
+		var ContractorGridDtl=			
+		{
+			title:"",
+			id:"contractorGrid",
+			detail:ContractorGridFieldObj,
+			visibleRow:8,
+			readonly:true,
+			removeAddDelete:true,
+			removePaging:true,
+			widthBasis: "Flex",
+			removeTbar:false
+		
+		}
+		var ContractorGridSection = plf.addGrid(ContractorGridDtl,this)		
+			ContractorColumn.add(ContractorGridSection);			
+		
+		var ContBtnColumn = plf.addColumnSection({columnWidth:1});	
+		var ContBtnCtrl=							
+		[	
+			plf.addBlank({}),	
+			plf.addBlank({}),							
+		    plf.addButton({"label":"Print Summary",id:"ContractorPrint"}),												
+			plf.addButton({"label":"Print Detail",id:"ContractorDtlPrint"}),	
+			plf.addBlank({})
+		]
+		ContBtnColumn.add(ContBtnCtrl);
+		//ContractorColumn.add(ContBtnColumn);
+		
+		var NorthDiversionColumn = plf.addColumnSection({"title":"North Diversions"});	
+		var NorthDiversionGridFieldObj=			
+		[   
+			{columnname:"Load Type",dataname:"GRP_NORTHDIV",datatype:"string",width:150,hidden:true},
+			//{columnname:"From Location",dataname:"FROM_LOC",datatype:"string",width:150},
+			{columnname:"Finance From Region",dataname:"FIN_FROM_REG",datatype:"string",width:100},
+			//{columnname:"From Region",dataname:"FROM_REG",datatype:"string",width:100},
+			//{columnname:"To Location",dataname:"TO_LOC",datatype:"string",width:100},
+			//{columnname:"To Region",dataname:"TO_REG",datatype:"string",width:100},
+			{columnname:"Finance To Region",dataname:"FIN_TO_REG",datatype:"string",width:100},
+			{columnname:"No. of Loads",dataname:"TOT_LEGS",datatype:"string",width:100},
+			{columnname:"Rate/Load",dataname:"AMT_LEGS",datatype:"string",datatype:"string",colAlign:'right',width:100,weightPrecision:3},
+			{columnname:"Total Amount",dataname:"TOT_AMT",datatype:"string",width:130,colAlign:'right',weightPrecision:3}
+		]
+		var NorthDiversionGridDtl=			
+		{
+			title:"",
+			id:"NorthDiversionGrid",
+			detail:NorthDiversionGridFieldObj,
+			visibleRow:8,
+			readonly:true,
+			removeAddDelete:true,
+			removePaging:true,
+			removeTbar:false,
+			widthBasis: "Flex",
+			groupByField: 'GRP_NORTHDIV',
+			columnWidth:1
+		}
+		var NorthDiversionGridSection = plf.addGrid(NorthDiversionGridDtl,this)		
+			NorthDiversionColumn.add(NorthDiversionGridSection);
+		
+		var NorthBtnColumn = plf.addColumnSection({columnWidth:1});	
+		var NorthBtnCtrl=							
+		[	
+			plf.addBlank({}),	
+			plf.addBlank({}),							
+		    plf.addButton({"label":"Print Summary",id:"NorthPrint"}),												
+			plf.addButton({"label":"Print Detail",id:"NorthDtlPrint"}),	
+			plf.addBlank({})
+		]
+		NorthBtnColumn.add(NorthBtnCtrl);
+		//NorthDiversionColumn.add(NorthBtnColumn);
+		
+		var SouthDiversionColumn = plf.addColumnSection({"title":"South Diversions"});	
+		var SouthDiversionGridFieldObj=			
+		[   
+			{columnname:"Load Type",dataname:"GRP_SOUTHDIV",datatype:"string",width:150,hidden:true},
+			//{columnname:"From Location",dataname:"FROM_LOC",datatype:"string",width:150},
+			{columnname:"Finance From Region",dataname:"FIN_FROM_REG",datatype:"string",width:100},
+			//{columnname:"From Region",dataname:"FROM_REG",datatype:"string",width:100},
+			//{columnname:"To Location",dataname:"TO_LOC",datatype:"string",width:100},
+			//{columnname:"To Region",dataname:"TO_REG",datatype:"string",width:100},
+			{columnname:"Finance To Region",dataname:"FIN_TO_REG",datatype:"string",width:100},
+			{columnname:"No. of Loads",dataname:"TOT_LEGS",datatype:"string",width:100},
+			{columnname:"Rate/Load",dataname:"AMT_LEGS",datatype:"string",datatype:"string",colAlign:'right',width:100,weightPrecision:3},
+			{columnname:"Total Amount",dataname:"TOT_AMT",datatype:"string",width:130,colAlign:'right',weightPrecision:3}
+		]
+		var SouthDiversionGridDtl=			
+		{
+			title:"",
+			id:"SouthDiversionGrid",
+			detail:SouthDiversionGridFieldObj,
+			visibleRow:8,
+			readonly:true,
+			removeAddDelete:true,
+			removePaging:true,
+			removeTbar:false,
+			widthBasis: "Flex",
+			groupByField: 'GRP_SOUTHDIV',
+			columnWidth:1
+		}
+		var SouthDiversionGridSection = plf.addGrid(SouthDiversionGridDtl,this)		
+			SouthDiversionColumn.add(SouthDiversionGridSection);
+		
+		var SouthBtnColumn = plf.addColumnSection({columnWidth:1});	
+		var SouthBtnCtrl=							
+		[	
+			plf.addBlank({}),	
+			plf.addBlank({}),							
+		    plf.addButton({"label":"Print Summary",id:"SouthPrint"}),												
+			plf.addButton({"label":"Print Detail",id:"SouthDtlPrint"}),
+			plf.addBlank({})
+		]
+		SouthBtnColumn.add(SouthBtnCtrl);
+		//SouthDiversionColumn.add(SouthBtnColumn);
+		
+		var baseTab = plf.addTabSection({columnWidth:1,tabs:[LoadDetailsColumn,LoadSummaryColumn,OTOStandardColumn,SumitomoColumn,DuqmSumitomoColumn,NorthDiversionColumn,SouthDiversionColumn,ContractorColumn]});
+		
+		//Main Page layout starts
+		mainpage.ptrMainSection.add(BillHdrColumn) 
+		mainpage.ptrMainSection.add(baseTab) 
+		//Main Page layout ends
+		
+		//History Data Section
+		mainpage.dataHistorySectionFlag=false;
+		// Event Handlers Mapping Begins
+		mainpage.eventHandlers = 
+		[
+		
+			{
+				"controlid":"",
+				"tasktype":"onload",
+				"input":["strBillNo"],
+				"service":"FINCoreFinanceServiceTS",
+				"methodName":"PDOinitDELViewCarBillTS"
+			},
+			{       
+				"controlid":"btnRecalc",
+				"tasktype":"btnclick",				
+				"input":[/*"loadDetailsGrid",*/"strBillNo"],
+				"service":"FINCoreFinanceServiceTS",
+				"methodName":"PDORecalcViewCarBillTS"
+			},
+			{       
+				"controlid":"btnSave",
+				"tasktype":"btnclick",				
+				"input":["loadDetailsGrid","strBillNo"],
+				"service":"FINCoreFinanceServiceTS",
+				"methodName":"PDOSaveViewCarBillTS"
+			},
+			{       
+				"controlid":"btnDelete",
+				"tasktype":"btnclick",				
+				"input":["loadDetailsGrid","strBillNo"],
+				"service":"FINCoreFinanceServiceTS",
+				"methodName":"PDODelViewCarBillTS"
+			},
+			{       
+				"controlid":"btnRollback",
+				"tasktype":"btnclick",				
+				"input":["loadDetailsGrid","strBillNo"],
+				"service":"FINCoreFinanceServiceTS",
+				"methodName":"PDORollbackCarBillTS"
+			},
+			{       
+				"controlid":"btnSubmit",
+				"tasktype":"btnclick",				
+				"input":["loadDetailsGrid","strBillNo"],
+				"service":"FINCoreFinanceServiceTS",
+				"methodName":"PDOSubViewCarBillTS"
+			},
+			{       
+				"controlid":"btnInvoice",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillInvoiceReport"
+			},			
+			{
+				
+					"tasktype":"proto",
+					"filename":"PDOFinance/PDOViewCarrierBill.json"
+			},
+			{       
+				"controlid":"LoadTypePrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillLoadReport"
+			},
+			{       
+				"controlid":"LoadTypeDtlPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillDtlLoadReport"
+			},
+			
+			{       
+				"controlid":"OTOPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillOTOReport"
+			},
+			{       
+				"controlid":"OTODtlPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillDtlOTOReport"
+			},
+			
+			{       
+				"controlid":"SumitoPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillSumiReport"
+			},
+			{       
+				"controlid":"SumitoDtlPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillDtlSumiReport"
+			},
+			{       
+				"controlid":"DuqmSumitoPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBilDuqmSumiReport"
+			},
+			{       
+				"controlid":"DuqmSumitodtlPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillDtlDuqmReport"
+			},
+			
+			{       
+				"controlid":"NorthPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillNorthReport"
+			},
+				{       
+				"controlid":"NorthDtlPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillDtlNorthReport"
+			},
+			{       
+				"controlid":"SouthPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillSouthReport"
+			},
+			{       
+				"controlid":"SouthDtlPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillDtlSouthReport"
+			},
+			{       
+				"controlid":"ContractorPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillCONTRReport"
+			},
+			{       
+				"controlid":"ContractorDtlPrint",
+				"tasktype":"btnclick",				
+				"input":["strBillNo"],
+				"service":"CoreReportService",
+				"methodName":"PDOCarBillDtlCONTRReport"
+			}
+
+			
+		];
+		
+		
+		mainpage.screenLinks=
+		{
+		
+			"finContView":
+				{
+					"dest":"PDOFinance.PDOContractBillDetails",
+					"hdr":[
+							{"src":"","dest":""}						
+						   ],
+					"grid":[
+							{"src":"INVOICE_NO","dest":"strConBillNo"},	
+							{"src":"INVOICE_NO","dest":"strLoadNo"},	
+							{"src":"GEN_DATE","dest":"dtGenDate"},
+							{"src":"BILL_AMT","dest":"iBillAmt"},
+							{"src":"CONTRACT_NO","dest":"strContractNo"},
+							{"src":"CONTRACT_NM","dest":"strContractNm"},
+							{"src":"VEH_NO","dest":"strVehCode"},
+							{"src":"NO_TRIPS","dest":"iNoofTrips"},
+							{"src":"NO_LOAD","dest":"iNoofLoads"},
+							{"src":"CONTRACT_RMKS","dest":"strContractRemarks"}
+						   ]
+				}	
+		
+		}
+		
+		mainpage.hlpLinks=
+		{
+			"Trips":
+				{
+					"hlpType":"hdrgrid",
+					"gridID":"loadDetailsGrid",
+					"hlpScreen":"PDOFinance.TripHelp",
+					"send":[
+								{"parent":"strBillNo","child":"strBillNo"}				
+						   ],
+					"receive":[
+							
+							]
+				}
+			
+		}
+		mainpage.gridPopupLinks=
+		{
+			"cancellink":
+			{
+				"dest":"PDOFinance.CancelLoad",
+					"hdr":[
+							{"src":"","dest":""}
+							],
+					"grid":[
+							{"src":"LOAD_NO","dest":"strLoadNo"}
+							]
+			}
+		}
+		
+		this.callParent(arguments);
+		
+	}
+});
